@@ -3,7 +3,7 @@ package Games::Shogi::Tori;
 use strict;
 use warnings;
 use vars qw(@ISA $VERSION);
-use Shogi;
+use Games::Shogi;
 
 @ISA = qw(Games::Shogi);
 $VERSION = '0.01';

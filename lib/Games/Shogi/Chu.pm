@@ -1,52 +1,37 @@
-package Games::Shogi::Dai;
+package Games::Shogi::Chu;
 
 use strict;
 use warnings;
 use vars qw(@ISA $VERSION);
-use Shogi;
+use Games::Shogi;
 
 @ISA = qw(Games::Shogi);
 $VERSION = '0.01';
 
-sub size() { 15 }
-sub promotion_zone() { 5 }
+sub size() { 12 }
+sub promotion_zone() { 4 }
 sub allow_drop() { undef }
 sub capture() { [ 'K', 'CP' ] }
 
 # {{{ Board static data
 my @board = (
-  #    15  14  13  12  11  10   9   8   7   6   5   4   3   2   1
-  [qw(  L   N  ST   I   _   S   G   K   G   S   _   I  ST   N   L )],  # a
-  [qw( RC  VO  CS   _  FL   _  BT  DE  BT   _  FL   _  CS  VO  RC )],  # b
-  [qw(  _   _   _  AB   _  EW  PH  LN  KI  EW   _  AB   _   _   _ )],  # c
-  [qw(  R  FD  SM  VM   B  DH  DK  FK  DK  DH   B  VM  SM  FD   R )],  # d
-  [qw(  P   P   P   P   P   P   P   P   P   P   P   P   P   P   P )],  # e
-  [qw(  _   _   _   _  GB   _   _   _   _   _  GB   _   _   _   _ )],  # f
-  [qw(  _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # g
-  [qw(  _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # h
-  [qw(  _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # i
-  [qw(  _   _   _   _  gb   _   _   _   _   _  gb   _   _   _   _ )],  # j
-  [qw(  p   p   p   p   p   p   p   p   p   p   p   p   p   p   p )],  # k
-  [qw(  r  fd  sm  vm   b  dh  dk  fk  dk  dh   b  vm  sm  fd   r )],  # l
-  [qw(  _   _   _  ab   _  ew  ki  ln  ph  ew   _  ab   _   _   _ )],  # m
-  [qw( rc  vo  cs   _  fl   _  bt  de  bt   _  fl   _  cs  vo  rc )],  # n
-  [qw(  l   n  st   i   _   s   g   k   g   s   _   i  st   n   l )] ),# o
+  #    12 11 10  9  8  7  6  5  4  3  2  1
+  [qw(  L FL  C  S  G DE  K  G  S  C FL  L )],  # a
+  [qw( RC  _  B  _ BT PH KI BT  _  B  _ RC )],  # b
+  [qw( SM VM  R DH DK FK LN DK DH  R VM SM )],  # c
+  [qw(  P  P  P  P  P  P  P  P  P  P  P  P )],  # d
+  [qw(  _  _  _ GB  _  _  _  _ GB  _  _  _ )],  # e
+  [qw(  _  _  _  _  _  _  _  _  _  _  _  _ )],  # f
+  [qw(  _  _  _  _  _  _  _  _  _  _  _  _ )],  # g
+  [qw(  _  _  _ gb  _  _  _  _ gb  _  _  _ )],  # h
+  [qw(  p  p  p  p  p  p  p  p  p  p  p  p )],  # i
+  [qw( sm vm  r dh dk ln fk dk dh  r vm sm )],  # j
+  [qw( rc  _  b  _ bt ki ph bt  _  b  _ rc )],  # k
+  [qw(  l fl  c  s  g  k de  g  s  c fl  l )] );# l
 # }}}
 
 # {{{ Pieces
 my $pieces = {
-  # {{{ Angry Bear
-  ab => {
-    name => 'Angry Bear',
-    romaji => 'shincho',
-    promote => 'g',
-    neighborhood => [
-      q(     ),
-      q(  o  ),
-      q( o^o ),
-      q(  o  ),
-      q(     ) ] },
-  # }}}
   # {{{ Bishop
   b => {
     name => 'Bishop',
@@ -69,18 +54,6 @@ my $pieces = {
       q( o o ),
       q( o^o ),
       q( ooo ),
-      q(     ) ] },
-  # }}}
-  # {{{ Cat Sword
-  cs => {
-    name => 'Cat Sword',
-    romaji => 'myojin',
-    promote => 'g',
-    neighborhood => [
-      q(     ),
-      q( o o ),
-      q(  ^  ),
-      q( o o ),
       q(     ) ] },
   # }}}
   # {{{ Copper General
@@ -131,18 +104,6 @@ my $pieces = {
       q( o o ),
       q(     ) ] },
   # }}}
-  # {{{ Evil Wolf
-  ew => {
-    name => 'Evil Wolf',
-    romaji => 'akuro',
-    promote => 'g',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q( o^o ),
-      q(     ),
-      q(     ) ] },
-  # }}}
   # {{{ Ferocious Leopard
   fl => {
     name => 'Ferocious Leopard',
@@ -154,18 +115,6 @@ my $pieces = {
       q(  ^  ),
       q( ooo ),
       q(     ) ] },
-  # }}}
-  # {{{ Flying Dragon
-  fd => {
-    name => 'Flying Dragon',
-    romaji => 'hiryu',
-    promote => 'g',
-    neighborhood => [
-      q(o   o),
-      q( o o ),
-      q(  ^  ),
-      q( o o ),
-      q(o   o) ] },
   # }}}
   # {{{ Free King
   fk => {
@@ -202,18 +151,6 @@ my $pieces = {
       q(  o  ),
       q(     ) ] },
   # }}}
-  # {{{ Iron General
-  i => {
-    name => 'Iron General',
-    romaji => 'tessho',
-    promote => 'g',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q(  ^  ),
-      q(     ),
-      q(     ) ] },
-  # }}}
   # {{{ King
   k => {
     name => 'King',
@@ -223,18 +160,6 @@ my $pieces = {
       q( ooo ),
       q( o^o ),
       q( ooo ),
-      q(     ) ] },
-  # }}}
-  # {{{ Knight
-  n => {
-    name => 'Knight',
-    romaji => 'keima',
-    promote => 'g',
-    neighborhood => [
-      q( x x ),
-      q(     ),
-      q(  ^  ),
-      q(     ),
       q(     ) ] },
   # }}}
   # {{{ Kirin
@@ -253,7 +178,7 @@ my $pieces = {
   l => {
     name => 'Lance',
     romaji => 'kyosha',
-    promote => 'wh',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q(  |  ),
@@ -267,11 +192,11 @@ my $pieces = {
     romaji => 'shishi',
     igui => 1,
     neighborhood2 => [
-      q(xxxxx), # The 'x' is a jump area, not the inside
-      q(xooox),
-      q(xo^ox),
-      q(xooox),
-      q(xxxxx) ],
+      q(22222), # The 'x' is a jump area, not the inside
+      q(21112),
+      q(21^12),
+      q(21112),
+      q(22222) ],
     neighborhood => { area => 2 }, # Really an area of 1 and a spare move...
     jump => { area => 2 } }, # Not quite correct, more of area 2 radius 1...
   # }}}
@@ -302,7 +227,7 @@ my $pieces = {
   # {{{ Reverse Chariot
   rc => {
     name => 'Reverse Chariot',
-    romaji => 'hansha',
+    romaji => 'hansha', # orig. 'hensha'
     promote => 'w',
     neighborhood => [
       q(     ),
@@ -335,18 +260,6 @@ my $pieces = {
       q(  o  ),
       q(     ) ] },
   # }}}
-  # {{{ Stone General
-  st => {
-    name => 'Stone General',
-    romaji => 'sekisho',
-    promote => 'g',
-    neighborhood => [
-      q(     ),
-      q( o o ),
-      q(  ^  ),
-      q(     ),
-      q(     ) ] },
-  # }}}
   # {{{ Silver General
   s => {
     name => 'Silver General',
@@ -358,18 +271,6 @@ my $pieces = {
       q(  ^  ),
       q( o o ),
       q(     ) ] },
-  # }}}
-  # {{{ Violent Ox
-  vo => {
-    name => 'Violent Ox',
-    romaji => 'mogyu',
-    promote => 'g',
-    neighborhood => [
-      q(  o  ),
-      q(  o  ),
-      q(oo^oo),
-      q(  o  ),
-      q(  o  ) ] },
   # }}}
   # {{{ Vertical Mover
   vm => {
@@ -395,17 +296,6 @@ my $pieces = {
       q( ooo ),
       q(     ) ] },
   # }}}
-  # {{{ Flying Ox
-  fo => {
-    name => 'Flying Ox',
-    romaji => 'higyu',
-    neighborhood => [
-      q(     ),
-      q( \|/ ),
-      q(  ^  ),
-      q( /|\ ),
-      q(     ) ] },
-  # }}}
   # {{{ Flying Stag
   fs => {
     name => 'Flying Stag',
@@ -415,6 +305,17 @@ my $pieces = {
       q( o|o ),
       q( o^o ),
       q( o|o ),
+      q(     ) ] },
+  # }}}
+  # {{{ Flying Ox
+  fo => {
+    name => 'Flying Ox',
+    romaji => 'higyu',
+    neighborhood => [
+      q(     ),
+      q( \|/ ),
+      q(  ^  ),
+      q( /|\ ),
       q(     ) ] },
   # }}}
   # {{{ Free Boar
@@ -432,12 +333,14 @@ my $pieces = {
   hf => {
     name => 'Horned Falcon',
     romaji => 'kakuo',
+    promote => 'bgn',
     neighborhood2 => [
       q(\ 2 /),
       q( \1/ ),
       q( -^- ),
       q( /|\ ),
       q(     ) ],
+    igui => 1, # May burn the piece on 1, also capture 1 and neighborhood to 2
     neighborhood => {
       diagonal => 'range',
       horizontal => 'range',
@@ -460,12 +363,15 @@ my $pieces = {
   se => {
     name => 'Soaring Eagle',
     romaji => 'hiju',
+    promote => 'rgn',
     neighborhood => [
       q(2   2),
       q( 1|1 ),
       q( -^- ),
       q( /|\ ),
-      q(     ) ] },
+      q(     ) ],
+    igui => 1 }, # May burn piece on 1 without moving
+                 # May burn piece on 1 and neighborhood to 2, capture as well
   # }}}
   # {{{ Whale
   wh => {
@@ -506,19 +412,19 @@ __END__
 
 =head1 NAME
 
-Games::Shogi::Dai - Piece descriptions and initial configuration for Dai Shogi
+Games::Shogi - Piece descriptions and initial configuration for Chu Shogi
 
 =head1 SYNOPSIS
 
-  use Games::Shogi::Dai;
-  $Game = Games::Shogi::Dai->new;
+  use Games::Shogi::Chu;
+  $Game = Games::Shogi::Chu->new;
   $piece = $Game->board()->[2][2];
   print @{$Game->neighbor($piece);
   print $Game->english_name('c'); # 'Copper General'
 
 =head1 DESCRIPTION
 
-Dai Shogi is a larger variant, on a 15 x 15 board. The Lion and Horned Falcon are probably the two most exotic pieces, everything else is relatively mundane.
+Chu Shogi is a middle variant with the Lion as its most outlandish piece, being able to move as a queen, and take 2 pieces at a time.
 
 =head1 SEE ALSO
 
@@ -536,4 +442,3 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
 
 =cut
-cut

@@ -4,6 +4,7 @@ use 5.008001;
 use strict;
 use warnings;
 use vars qw(@ISA $VERSION);
+use Games::Shogi;
 
 @ISA = qw(Games::Shogi);
 $VERSION = '0.01';

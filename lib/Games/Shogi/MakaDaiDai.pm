@@ -1,46 +1,40 @@
-package Games::Shogi::Tai;
+package Games::Shogi::MakaDaiDai;
 
 use strict;
 use warnings;
 use vars qw(@ISA $VERSION);
-use Shogi;
+use Games::Shogi;
 
 @ISA = qw(Games::Shogi);
 $VERSION = '0.01';
 
-sub size() { 25 }
-sub promotion_zone() { 7 }
+sub size() { 19 }
+sub promotion_zone() { 6 }
 sub allow_drop() { undef }
-sub capture() { [ 'K', 'CP' ] }
+sub capture() { [ 'K', 'CP', 'EM' ] }
 
 # {{{ Board static data
 my @board = (
-    #     25  24  23  22  21  20  19  18  17  16  15  14  13  12  11  10   9   8   7   6   5   4   3   2   1
-    [qw(   L  WT  WH  FD  LG   D   R  DH  DK  FK   G DSP   E  DB  FK   G  DK  DH   R   D  LG  FD  WH  TS   L )],  # a
-    [qw(  RC SDR  SE   N  PS FTP   B  FE  WE FDE   S RIG  LG   S FDE  WE  FE   B FTP  PS   N SDR  SE SDR  RC )],  # b
-    [qw( SCH WHO  RS  VO CSW  BB SDE GDE  BM  BT  SD  GG  NK  WR BDE  BT  BM GDE SDE  BB CSW  VO  RS WHO SCH )],  # c
-    [qw(  SO WBF  FL  NB  SB  CC  HF  OM  OK  PC GBD  PH  LN  KI  GD  PC  RB  OM  HF  CC  EB  WB  FL WBF  SO )],  # d
-    [qw( RCH  VS  WO  Ea  ST   T   I   C  OR  CS  RD  HM  DE  CA  RD  CS  OR   C   I   T  ST  EA  WO  BD LCH )],  # e
-    [qw(  HD  FH EBA  DO  FO  SM  VM VBE SBR PST  AB  EW  LD  EW  AB PST SBR VBE  VM  SM  FO  DO EBA  FH  HD )],  # f
-    [qw(   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P )],  # g
-    [qw(   _   _   _   _   _   _   _  GB   _   _   _   _   _   _   _   _   _  GB   _   _   _   _   _   _   _ )],  # h
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # i
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # j
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # k
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # l
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # m
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # n
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # o
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # p
-    [qw(   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _ )],  # q
-    [qw(   _   _   _   _   _   _   _   gb  _   _   _   _   _   _   _   _   _   gb  _   _   _   _   _   _   _ )],  # r
-    [qw(   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p )],  # s
-    [qw(  hd  fh eba  do  fo  sm  vm vbe sbr pst  ab  ew  ld  ew  ab pst sbr vbe  vm  sm  fo  do  eba fh  hd )],  # t
-    [qw( lch  bd  wo  ea  st   t   i   c  or  cs  rd  ca  de  hm  rd  cs  or   c   i   t  st  ea  wo  vs rch )],  # u
-    [qw(  so wbf  fl  wb  eb  cc  hf  om  ok  pc  gd  ki  ln  ph  gbd pc  rb  om  hf  cc  sb  nb  fl  wbf so )],  # v
-    [qw( sch who  rs  vo csw  bb sde gde  bm  bt bde  wr  nk  gg  sd  bt  bm gde sde  bb csw  vo  rs who sch )],  # w
-    [qw(  rc sdr  se   n  ps ftp   b  fe  we fde   s  lg  cp rig   s fde  we  fe   b ftp  ps   n  se sdr  rc )],  # x
-    [qw(   l  bd   w  fd  lg   d   r  dh  dk  fk   g  dv   e dsp  fk   g  dk  dh   r   d  lg  fd   w  wt   l )] );# y
+  #   19  18  17  16  15  14  13  12  11  10   9   8   7   6   5   4   3   2   1
+  [qw( L   E  ST   T   I   C   S   G DSP   K  DV   G   S   C   I   T  ST   E   L  )],  # a
+  [qw(RC   _  CS   _  OM   _ RDR  FL  BT  DE  BT  FL CSE   _  CC   _  CS   _  RC  )],  # b
+  [qw( _  OR   _  AB   _  BB   _  EW  PH  LN  KI  EW   _  BB   _  AB   _  OR   _  )],  # c
+  [qw(DO   _   N   _  VO   _  FD  SD GGD  LD  WR BDE  FD   _  VO   _   N   _  DO  )],  # d
+  [qw( R RCH  SM  SF  VM   B  DH  DK  HM  FK  CA  DK  DH   B  VM  SF  SM LCH   R  )],  # e
+  [qw( P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P   P  )],  # f
+  [qw( _   _   _   _   _  GB   _   _   _   _   _   _   _  GB   _   _   _   _   _  )],  # g
+  [qw( _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _  )],  # h
+  [qw( _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _  )],  # i
+  [qw( _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _  )],  # j
+  [qw( _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _  )],  # k
+  [qw( _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _  )],  # l
+  [qw( _   _   _   _   _  gb   _   _   _   _   _   _   _  gb   _   _   _   _   _  )],  # m
+  [qw( p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p   p  )],  # n
+  [qw( r lch  sm  sf  ve   b  dh  dk  ca  fk  hm  dk  dh   b  vm  sf  sm rch   r  )],  # o
+  [qw(do   _   n   _  vo   _  fd bde  wk  ld ggd  sd  fd   _  vo   _   n   _  do  )],  # p
+  [qw( _  or   _  ab   _  bb   _  ew  ki  ln  ph  ew   _  bb   _  ab   _  or   _  )],  # q
+  [qw(rc   _  cs   _  cc   _ cse  fl  bt  de  bt  fl rdr   _  om   _  cs   _  rc  )],  # r
+  [qw( l   e  st   t   i   c   s   g  dv   k dsp   g   s   c   i   t  st   e   l  )] ),# s
 # }}}
 
 # {{{ Pieces
@@ -48,6 +42,7 @@ my $pieces = {
   # {{{ Angry Boar
   ab => {
     name => 'Angry Boar',
+    promote => 'fb',
     neighborhood => [
       q(     ),
       q(  o  ),
@@ -55,11 +50,21 @@ my $pieces = {
       q(  o  ),
       q(     ) ] },
   # }}}
+  # {{{ Bat
+  ba => { 
+    name => 'Bat',
+    neighborhood => [
+      q(     ),
+      q(  |  ),
+      q(  ^  ),
+      q( / \ ),
+      q(     ) ] },
+  # }}}
   # {{{ Bishop
   b => { 
     name => 'Bishop',
     romaji => 'kakugyo',
-    promote => 'dh',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q( \ / ),
@@ -70,6 +75,7 @@ my $pieces = {
   # {{{ Blind Bear
   bb => {
     name => 'Blind Bear',
+    promote => 'fbe',
     neighborhood => [
       q(     ),
       q( o o ),
@@ -77,15 +83,16 @@ my $pieces = {
       q( o|o ),
       q(     ) ] },
   # }}}
-  # {{{ Blue Dragon
-  bd => {
-    name => 'Blue Dragon',
+  # {{{ Blind Tiger
+  bt => {
+    name => 'Blind Tiger',
+    promote => 'ftg',
     neighborhood => [
-      q(  o  ),
-      q( oo/ ),
-      q( -^- ),
-      q(  o  ),
-      q(  o  ) ] },
+      q(     ),
+      q( o o ),
+      q( o^o ),
+      q( ooo ),
+      q(     ) ] },
   # }}}
   # {{{ Buddhist Devil
   bde => {
@@ -113,6 +120,7 @@ my $pieces = {
   # {{{ Capricorn
   ca => {
     name => 'Capricorn',
+    promote => 'g',
     neighborhood => [
       q(X   X),
       q( \ / ),
@@ -124,6 +132,7 @@ my $pieces = {
   cs => {
     name => 'Cat Sword',
     romaji => 'myojin',
+    promote => 'fca',
     neighborhood => [
       q(     ),
       q( o o ),
@@ -142,27 +151,27 @@ my $pieces = {
       q(  o  ),
       q(     ) ] },
   # }}}
+  # {{{ Coiled Serpent
+  cse => {
+    name => 'Coiled Serpent',
+    promote => 'fse',
+    neighborhood => [
+      q(     ),
+      q(  o  ),
+      q(  ^  ),
+      q( ooo ),
+      q(     ) ] },
+  # }}}
   # {{{ Copper General
   c => {
     name => 'Copper General',
     romaji => 'dosho',
+    promote => 'fc',
     neighborhood => [
       q(     ),
       q( ooo ),
       q(  ^  ),
       q(  o  ),
-      q(     ) ] },
-  # }}}
-  # {{{ Crown Prince
-  cp => {
-    name => 'Crown Prince',
-    romaji => 'taishi',
-    promote => 'em',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q( o^o ),
-      q( ooo ),
       q(     ) ] },
   # }}}
   # {{{ Dark Spirit
@@ -198,16 +207,6 @@ my $pieces = {
       q(     ),
       q(  x  ) ] },
   # }}}
-  # {{{ Dove
-  d => {
-    name => 'Dove',
-    neighborhood => [
-      q(o o o),
-      q( 525 ),
-      q(o2^2o),
-      q( 525 ),
-      q(o o o) ] },
-  # }}}
   # {{{ Dragon Horse
   dh => {
     name => 'Dragon Horse',
@@ -234,7 +233,6 @@ my $pieces = {
   de => {
     name => 'Drunk Elephant',
     romaji => 'suizo',
-    promote => 'cp',
     neighborhood => [
       q(     ),
       q( ooo ),
@@ -245,23 +243,13 @@ my $pieces = {
   # {{{ Earth General
   e => {
     name => 'Earth General',
+    promote => 'fe',
     neighborhood => [
       q(     ),
       q(  o  ),
       q(  ^  ),
       q(  o  ),
       q(     ) ] },
-  # }}}
-  # {{{ Eastern Barbarian
-  eb => {
-    name => 'Eastern Barbarian',
-    promote => 'ln',
-    neighborhood => [
-      q(  o  ),
-      q( o2o ),
-      q( o^o ),
-      q(  2  ),
-      q(  o  ) ] },
   # }}}
   # {{{ Emperor
   em => {
@@ -273,21 +261,11 @@ my $pieces = {
       q(  o  ),
       q(     ) ] },
   # }}}
-  # {{{ Enchanted Badger
-  eba => {
-    name => 'Enchanted Badger',
-    promote => 'do',
-    neighborhood => [
-      q(  o  ),
-      q(  2  ),
-      q(o2^2o),
-      q(     ),
-      q(     ) ] },
-  # }}}
   # {{{ Evil Wolf
   ew => {
     name => 'Evil Wolf',
     romaji => 'akuro',
+    promote => 'fw',
     neighborhood => [
       q(     ),
       q( ooo ),
@@ -299,28 +277,19 @@ my $pieces = {
   fl => {
     name => 'Ferocious Leopard',
     romaji => 'mohyo',
+    promote => 'fle',
     neighborhood => [
       q(     ),
       q( ooo ),
       q(  ^  ),
       q( ooo ),
       q(     ) ] },
-  # }}}
-  # {{{ Fierce Eagle
-  fe => {
-    name => 'Fierce Eagle',
-    neighborhood => [
-      q(o   o),
-      q( 2 2 ),
-      q( o^o ),
-      q( 2 2 ),
-      q(o   o) ] },
   # }}}
   # {{{ Flying Dragon
   fd => {
     name => 'Flying Dragon',
     romaji => 'hiryu',
-    promote => 'dk',
+    promote => 'g',
     neighborhood => [
       q(o   o),
       q( 2 2 ),
@@ -328,21 +297,91 @@ my $pieces = {
       q( 2 2 ),
       q(o   o) ] },
   # }}}
-  # {{{ Flying Horse
-  fh => {
-    name => 'Flying Horse',
-    promote => 'fk',
+  # {{{ Free Bear
+  fbe => {
+    name => 'Free Bear',
     neighborhood => [
-      q(     ),
-      q( ooo ),
-      q(o2^2o),
-      q( o o ),
+      q(x   x),
+      q( \ / ),
+      q( -^- ),
+      q( / \ ),
       q(     ) ] },
   # }}}
-  # {{{ Flying Ox
-  fo => {
-    name => 'Flying Ox',
-    romaji => 'higyu',
+  # {{{ Free Boar
+  fb => {
+    name => 'Free Boar',
+    neighborhood => [
+      q(     ),
+      q( \ / ),
+      q( -^- ),
+      q( / \ ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Cat
+  fca => {
+    name => 'Free Cat',
+    neighborhood => [
+      q(     ),
+      q( \ / ),
+      q(  ^  ),
+      q( / \ ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Copper
+  fc => {
+    name => 'Free Copper',
+    neighborhood => [
+      q(     ),
+      q( \\|/ ),
+      q(  ^  ),
+      q(  |  ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Earth
+  fe => {
+    name => 'Free Earth',
+    neighborhood => [
+      q(     ),
+      q(  |  ),
+      q(  ^  ),
+      q(  |  ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Gold
+  fg => {
+    name => 'Free Gold',
+    promote => 'fg',
+    neighborhood => [
+      q(     ),
+      q( \|/ ),
+      q( -^- ),
+      q(  |  ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Go-Between
+  fgb => {
+    name => 'Go-Between',
+    romaji => 'chunin',
+    neighborhood => [
+      q(     ),
+      q(  o  ),
+      q(  ^  ),
+      q(  o  ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Iron
+  fi => {
+    name => 'Free Iron',
+    neighborhood => [
+      q(     ),
+      q( \|/ ),
+      q(  ^  ),
+      q(     ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Leopard
+  fle => {
+    name => 'Free Leopard',
     neighborhood => [
       q(     ),
       q( \|/ ),
@@ -350,25 +389,55 @@ my $pieces = {
       q( /|\ ),
       q(     ) ] },
   # }}}
-  # {{{ Fragrant Elephant
-  fel => {
-    name => 'Fragrant Elephant',
+  # {{{ Free Serpent
+  fse => {
+    name => 'Free Serpent',
     neighborhood => [
-      q(  o  ),
-      q( \2/ ),
-      q(o2^2o),
-      q( 222 ),
-      q(o o o) ] },
+      q(     ),
+      q(  |  ),
+      q(  ^  ),
+      q( /|\ ),
+      q(     ) ] },
   # }}}
-  # {{{ Free Demon
-  fd => {
-    name => 'Free Demon',
+  # {{{ Free Silver
+  fs => {
+    name => 'Free Silver',
     neighborhood => [
-      q(  o  ),
-      q( \5/ ),
-      q( -^- ),
-      q( /5\ ),
-      q(  o  ) ] },
+      q(     ),
+      q( \|/ ),
+      q(  ^  ),
+      q( / \ ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Stone
+  fst => {
+    name => 'Free Stone',
+    neighborhood => [
+      q(     ),
+      q( \ / ),
+      q(  ^  ),
+      q(     ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Wolf
+  fw => {
+    name => 'Free Wolf',
+    neighborhood => [
+      q(     ),
+      q( \|/ ),
+      q(o5^5o),
+      q( /|\ ),
+      q(     ) ] },
+  # }}}
+  # {{{ Free Dragon
+  frd => {
+    name => 'Free Dragon',
+    neighborhood => [
+      q(     ),
+      q( \|/ ),
+      q(  ^  ),
+      q( ooo ),
+      q(     ) ] },
   # }}}
   # {{{ Free King
   fk => {
@@ -391,6 +460,16 @@ my $pieces = {
       q( /|\ ),
       q(     ) ] },
   # }}}
+  # {{{ Free Tiger
+  ftg => {
+    name => 'Free Tiger',
+    neighborhood => [
+      q(     ),
+      q( \ / ),
+      q( -^- ),
+      q( /|\ ),
+      q(     ) ] },
+  # }}}
   # {{{ Furious Fiend
   ff => {
     name => 'Furious Fiend',
@@ -405,6 +484,7 @@ my $pieces = {
   gb => {
     name => 'Go-Between',
     romaji => 'chunin',
+    promote => 'fgb',
     neighborhood => [
       q(     ),
       q(  o  ),
@@ -416,6 +496,7 @@ my $pieces = {
   g => {
     name => 'Gold General',
     romaji => 'kinsho',
+    promote => 'fg',
     neighborhood => [
       q(     ),
       q( ooo ),
@@ -433,16 +514,6 @@ my $pieces = {
       q( 3|3 ),
       q(o   o) ] },
   # }}}
-  # {{{ Golden Deer
-  gd => {
-    name => 'Golden Deer',
-    neighborhood => [
-      q(     ),
-      q( \ / ),
-      q(  ^  ),
-      q( 2 2 ),
-      q(o   o) ] },
-  # }}}
   # {{{ Great Dragon
   gdr => {
     name => 'Great Dragon',
@@ -452,16 +523,6 @@ my $pieces = {
       q( -^- ),
       q( 323 ),
       q(o   o) ] },
-  # }}}
-  # {{{ Great Elephant
-  ge => {
-    name => 'Great Elephant',
-    neighborhood => [
-      q(o o o),
-      q( 333 ),
-      q(o5^5o),
-      q( 535 ),
-      q(o o o) ] },
   # }}}
   # {{{ Guardian of the Gods
   ggd => {
@@ -477,6 +538,7 @@ my $pieces = {
   # {{{ Hook Mover
   hm => {
     name => 'Hook Mover',
+    promote => 'g',
     neighborhood => [
       q(  +  ),
       q(  |  ),
@@ -484,31 +546,11 @@ my $pieces = {
       q(  |  ),
       q(  +  ) ] },
   # }}}
-  # {{{ Horned Falcon
-  hf => {
-    name => 'Horned Falcon',
-    romaji => 'kakuo',
-    neighborhood => [
-      q(  2  ),
-      q( \1/ ),
-      q( -^- ),
-      q( /|\ ),
-      q(     ) ] },
-  # }}}
-  # {{{ Howling Dog
-  hd => {
-    name => 'Howling Dog',
-    neighborhood => [
-      q(     ),
-      q(  |  ),
-      q(  ^  ),
-      q(  o  ),
-      q(     ) ] },
-  # }}}
   # {{{ Iron General
   i => {
     name => 'Iron General',
     romaji => 'tessho',
+    promote => 'fi',
     neighborhood => [
       q(     ),
       q( ooo ),
@@ -516,11 +558,23 @@ my $pieces = {
       q(     ),
       q(     ) ] },
   # }}}
+  # {{{ King
+  k => {
+    name => 'King',
+    romaji => 'osho',
+    promote => 'em',
+    neighborhood => [
+      q(     ),
+      q( ooo ),
+      q( o^o ),
+      q( ooo ),
+      q(     ) ] },
+  # }}}
   # {{{ Kirin
   ki => {
     name => 'Kirin',
     romaji => 'kylin',
-    promote => 'GD',
+    promote => 'gd',
     neighborhood => [
       q(  x  ),
       q( o o ),
@@ -544,6 +598,7 @@ my $pieces = {
   l => {
     name => 'Lance',
     romaji => 'kyosha',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q(  |  ),
@@ -554,21 +609,12 @@ my $pieces = {
   # {{{ Left Chariot
   lch => {
     name => 'Left Chariot',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q( \|  ),
       q(  ^  ),
       q(  o\ ),
-      q(     ) ] },
-  # }}}
-  # {{{ Left General
-  lg => {
-    name => 'Left General',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q(  ^o ),
-      q( ooo ),
       q(     ) ] },
   # }}}
   # {{{ Lion
@@ -589,7 +635,7 @@ my $pieces = {
   # {{{ Lion Dog
   ld => {
     name => 'Lion Dog',
-    promote => 'ge',
+    promote => 'g',
     neighborhood => [
       q(o o o),
       q( 333 ),
@@ -597,62 +643,20 @@ my $pieces = {
       q( 333 ),
       q(o o o) ] },
   # }}}
-  # {{{ Long Nosed Goblin
-  lng => {
-    name => 'Long Nosed Goblin',
-    neighborhood => [
-      q(X   X),
-      q( \o/ ),
-      q( o^o ),
-      q( /o\ ),
-      q(X   X) ] },
-  # }}}
   # {{{ Mountain Witch
   mw => {
-    name => 'Mountain Witch',
+    name => 'Mounntain Witch',
     neighborhood => [
       q(     ),
-      q( \o/ ),
+      q( \\o/ ),
       q(  ^  ),
-      q( / \ ),
+      q( /|\\ ),
       q(     ) ] },
-  # }}}
-  # {{{ Neighboring King
-  nk => {
-    name => 'Neighboring King',
-    promote => 'sbr',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q( o^o ),
-      q( o o ),
-      q(     ) ] },
-  # }}}
-  # {{{ Northern Barbarian
-  nb => {
-    name => 'Northern Barbarian',
-    promote => 'fe',
-    neighborhood => [
-      q(o   o),
-      q( 2 2 ),
-      q( o^o ),
-      q( o o ),
-      q(     ) ] },
-  # }}}
-  # {{{ Old Kite Hawk
-  ok => {
-    name => 'Old Kite Hawk',
-    promote => 'lgn',
-    neighborhood => [
-      q(  o  ),
-      q( o2o ),
-      q(o2^2o),
-      q(  2  ),
-      q(  o  ) ] },
   # }}}
   # {{{ Old Monkey
   om => {
     name => 'Old Monkey',
+    promote => 'mw',
     neighborhood => [
       q(     ),
       q( o o ),
@@ -663,7 +667,7 @@ my $pieces = {
   # {{{ Old Rat
   or => {
     name => 'Old Rat',
-    promote => 'ws',
+    promote => 'ba',
     neighborhood => [
       q(o   o),
       q( 2 2 ),
@@ -683,16 +687,6 @@ my $pieces = {
       q(     ),
       q(     ) ] },
   # }}}
-  # {{{ Peacock
-  pc => {
-    name => 'Peacock',
-    neighborhood => [
-      q(X   X),
-      q( \ / ),
-      q(  ^  ),
-      q( o o ),
-      q(     ) ] },
-  # }}}
   # {{{ Phoenix
   ph => {
     name => 'Phoenix',
@@ -705,30 +699,20 @@ my $pieces = {
       q(  o  ),
       q(x   x) ] },
   # }}}
-  # {{{ Poisonous Snake
-  ps => {
-    name => 'Poisonous Snake',
-    promote => 'hm',
+  # {{{ Prince
+  pr => {
+    name => 'Prince',
     neighborhood => [
-      q(  x  ),
       q(     ),
+      q( ooo ),
       q( o^o ),
-      q(     ),
-      q(x   x) ] },
-  # }}}
-  # {{{ Ramshead Soldier
-  rs => {
-    name => 'Ramshead Soldier',
-    neighborhood => [
-      q(     ),
-      q( \ / ),
-      q(  ^  ),
-      q(     ),
-      q(  x  ) ] },
+      q( ooo ),
+      q(     ) ] },
   # }}}
   # {{{ Reclining Dragon
   rdr => {
     name => 'Reclining Dragon',
+    promote => 'fdr',
     neighborhood => [
       q(     ),
       q(  o  ),
@@ -740,6 +724,7 @@ my $pieces = {
   rc => {
     name => 'Reverse Chariot',
     romaji => 'hansha',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q(  |  ),
@@ -750,6 +735,7 @@ my $pieces = {
   # {{{ Right Chariot
   rch => {
     name => 'Right Chariot',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q(  |/ ),
@@ -757,37 +743,16 @@ my $pieces = {
       q( /o  ),
       q(     ) ] },
   # }}}
-  # {{{ Right General
-  rig => {
-    name => 'Right General',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q( o^  ),
-      q( ooo ),
-      q(     ) ] },
-  # }}}
   # {{{ Rook
   r => {
     name => 'Rook',
     romaji => 'hisha',
-    promote => 'dk',
+    promote => 'g',
     neighborhood => [
       q(     ),
       q(  |  ),
       q( -^- ),
       q(  |  ),
-      q(     ) ] },
-  # }}}
-  # {{{ Rushing Bird
-  rb => {
-    name => 'Rushing Bird',
-    promote => 'fde',
-    neighborhood => [
-      q(     ),
-      q( \|/ ),
-      q( -^- ),
-      q( /|\ ),
       q(     ) ] },
   # }}}
   # {{{ She-Devil
@@ -801,14 +766,15 @@ my $pieces = {
       q( 252 ),
       q(o o o) ] },
   # }}}
-  # {{{ Side Dragon
-  sdr => {
-    name => 'Side Dragon',
+  # {{{ Side Flyer
+  sf => {
+    name => 'Side Flyer',
+    promote => 'g',
     neighborhood => [
       q(     ),
-      q(  |  ),
+      q( o o ),
       q( -^- ),
-      q(  o  ),
+      q( o o ),
       q(     ) ] },
   # }}}
   # {{{ Side Mover
@@ -823,36 +789,16 @@ my $pieces = {
       q(  o  ),
       q(     ) ] },
   # }}}
-  # {{{ Silver Demon
-  sde => {
-    name => 'Silver Demon',
-    neighborhood => [
-      q(o   o),
-      q( 2 2 ),
-      q(  ^  ),
-      q( / \ ),
-      q(     ) ] },
-  # }}}
   # {{{ Silver General
   s => {
     name => 'Silver General',
     romaji => 'ginsho',
+    promote => 'fs',
     neighborhood => [
       q(     ),
       q( ooo ),
       q(  ^  ),
       q( o o ),
-      q(     ) ] },
-  # }}}
-  # {{{ Soaring Eagle
-  se => {
-    name => 'Soaring Eagle',
-    romaji => 'hiju',
-    neighborhood => [
-      q(2   2),
-      q( 1|1 ),
-      q( -^- ),
-      q( /|\ ),
       q(     ) ] },
   # }}}
   # {{{ Soldier
@@ -865,17 +811,6 @@ my $pieces = {
       q( /|\ ),
       q(     ) ] },
   # }}}
-  # {{{ Southern Barbarian
-  sb => {
-    name => 'Southern Barbarian',
-    promote => 'we',
-    neighborhood => [
-      q(     ),
-      q( o o ),
-      q( o^o ),
-      q( 2 2 ),
-      q(o   o) ] },
-  # }}}
   # {{{ Square Mover
   sm => {
     name => 'Square Mover',
@@ -886,20 +821,11 @@ my $pieces = {
       q(  |  ),
       q(     ) ] },
   # }}}
-  # {{{ Standard Bearer
-  sbr => {
-    name => 'Standard Bearer',
-    neighborhood => [
-      q(     ),
-      q( \|/ ),
-      q(oo^oo),
-      q( ooo ),
-      q(o o o) ] },
-  # }}}
   # {{{ Stone General
   st => {
     name => 'Stone General',
     romaji => 'sekisho',
+    promote => 'fst',
     neighborhood => [
       q(     ),
       q( o o ),
@@ -920,32 +846,13 @@ my $pieces = {
   # {{{ Tile General
   t => {
     name => 'Tile General',
+    #promote => 'free tile', # XXX Doesn't exist
     neighborhood => [
       q(     ),
       q( o o ),
       q(  ^  ),
       q(  o  ),
       q(     ) ] },
-  # }}}
-  # {{{ Turtle-Snake
-  ts => {
-    name => 'Turtle-Snake',
-    neighborhood => [
-      q(     ),
-      q( \o/ ),
-      q(  ^  ),
-      q( o o ),
-      q(o   o) ] },
-  # }}}
-  # {{{ Vermillion Sparrow
-  vs => {
-    name => 'Vermillion Sparrow',
-    neighborhood => [
-      q(     ),
-      q( \|/ ),
-      q(  ^  ),
-      q( ooo ),
-      q(o   o) ] },
   # }}}
   # {{{ Vertical Mover
   vm => {
@@ -959,89 +866,16 @@ my $pieces = {
       q(  |  ),
       q(     ) ] },
   # }}}
-  # {{{ Violent Bear
-  vb => {
-    name => 'Violent Bear',
-    neighborhood => [
-      q(o   o),
-      q( 2 2 ),
-      q(  ^  ),
-      q(     ),
-      q(     ) ] },
-  # }}}
   # {{{ Violent Ox
   vo => {
     name => 'Violent Ox',
     romaji => 'mogyu',
+    promote => 'g',
     neighborhood => [
       q(  o  ),
       q(  2  ),
       q(o2^2o),
       q(  2  ),
-      q(  o  ) ] },
-  # }}}
-  # {{{ Water Buffalo
-  wbf => {
-    name => 'Water Buffalo',
-    promote => 'ftp',
-    neighborhood => [
-      q(  o  ),
-      q( \o/ ),
-      q( -^- ),
-      q( /o\ ),
-      q(  o  ) ] },
-  # }}}
-  # {{{ Western Barbarian
-  wb => {
-    name => 'Western Barbarian',
-    promote => 'ld',
-    neighborhood => [
-      q(     ),
-      q( ooo ),
-      q( 2^2 ),
-      q(  o  ),
-      q(     ) ] },
-  # }}}
-  # {{{ Whale
-  wh => {
-    name => 'Whale',
-    romaji => 'keigei',
-    neighborhood => [
-      q(     ),
-      q(  |  ),
-      q(  ^  ),
-      q( /|\ ),
-      q(     ) ] },
-  # }}}
-  # {{{ White Elephant
-  we => {
-    name => 'White Elephant',
-    neighborhood => [
-      q(o o o),
-      q( 222 ),
-      q(o2^2o),
-      q( /2\ ),
-      q(  o  ) ] },
-  # }}}
-  # {{{ White Horse
-  who => {
-    name => 'White Horse',
-    romaji => 'hakku',
-    neighborhood => [
-      q(     ),
-      q( \|/ ),
-      q(  ^  ),
-      q(  |  ),
-      q(     ) ] },
-  # }}}
-  # {{{ White Tiger
-  wt => {
-    name => 'White Tiger',
-    neighborhood => [
-      q(  o  ),
-      q( \oo ),
-      q( -^- ),
-      q(  o  ),
       q(  o  ) ] },
   # }}}
   # {{{ Wizard Stork
@@ -1052,16 +886,6 @@ my $pieces = {
       q( \ / ),
       q(  ^  ),
       q( /o\ ),
-      q(     ) ] },
-  # }}}
-  # {{{ Wood General
-  w => {
-    name => 'Wood General',
-    neighborhood => [
-      q(o   o),
-      q( 2 2 ),
-      q(  ^  ),
-      q(     ),
       q(     ) ] },
   # }}}
   # {{{ Wrestler
@@ -1104,21 +928,21 @@ __END__
 
 =head1 NAME
 
-Games::Shogi::Tai - Piece descriptions and initial configuration for Tai Shogi
+Games::Shogi::MakaDaiDai - Piece descriptions and initial configuration for Maka Dai Dai Shogi
 
 =head1 SYNOPSIS
 
-  use Games::Shogi::Tai;
-  $Game = Games::Shogi::Chu->new;
+  use Games::Shogi::MakaDaiDai;
+  $Game = Games::Shogi::MakaDaiDai->new;
   $piece = $Game->board()->[2][2];
   print @{$Game->neighbor($piece);
   print $Game->english_name('c'); # 'Copper General'
 
 =head1 DESCRIPTION
 
-At 25 x 25, Tai Shogi is the largest game conclusively known to be played in antiquity. It includes almost all of the hard-to-define pieces in the smaller Shogis and introduces the Emperor. Thankfully it doesn't occur in the starting configuration, but if you manage to promote the Crown Prince you can play with one. This piece can move instantaneously to any piece on the board, capturing any piece that isn't protected by another piece.
+Maka Dai Dai Shogi, at 19 squares on a side, is the second largest commonly known Shogi game. Tai Shogi is the largest commonly known game, with Taikyoku Shogi thought to be the largest ever played, nearly 4x as large as Maka Dai Dai, with 36 squares on a side.
 
-Of course, it still includes pieces like the Buddhist Spirit, Lion, Capricorn and Vice General.
+The more bizarre pieces include the Buddhist Devil, Capricorn and the Lion appearing again. L<Games::Shogi> explains most of the piece's moves, and there is some annotation here with the 'igui' key in a piece's hash indicating exotic powers.
 
 =head1 SEE ALSO
 
