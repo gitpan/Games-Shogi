@@ -1,0 +1,21 @@
+Changes
+Chu.pm
+Dai.pm
+DaiDai.pm
+examples/Shogi.pl
+examples/Window/Window.pm
+examples/Window/t/1.t
+Heian.pm
+HeianDai.pm
+MakaDaiDai.pm
+Makefile.PL
+MANIFEST
+README
+Shogi.pm
+Tai.pm
+Taikyoku.pm
+Tenjiku.pm
+Tori.pm
+t/1.t
+Wa.pm
+META.yml                                Module meta-data (added by MakeMaker)
