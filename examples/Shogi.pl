@@ -4,7 +4,7 @@ use strict;
 use Curses;
 use FindBin;
 use lib "$FindBin::Bin/Window/";
-use lib "$FindBin::Bin/../";
+use lib "$FindBin::Bin/../lib/";
 use Window;
 
 use Shogi;

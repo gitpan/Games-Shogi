@@ -570,45 +570,30 @@ sub new {
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-Games::Shogi::Tenjiku - Perl extension for blah blah blah
+Games::Shogi::Tenjiku - Piece descriptions and initial configuration for Tenjiku Shogi
 
 =head1 SYNOPSIS
 
   use Games::Shogi::Tenjiku;
-  blah blah blah
+  $Game = Games::Shogi::Tenjiku->new;
+  $piece = $Game->board()->[2][2];
+  print @{$Game->neighbor($piece);
+  print $Game->english_name('c'); # 'Copper General'
 
 =head1 DESCRIPTION
 
-Stub documentation for Games::Shogi::Tenjiku, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
-
-Blah blah blah.
-
-=head2 EXPORT
-
-None by default.
-
-
+Tenjiku Shogi is one of the larger variants, and one we have the most research on. Containing a wealth of exotic pieces such as the Bishop General (the Bishop with the ability to jump), Fire Demons and the Heavenly Tetrarchs, it makes for every interesting gameplay. Thankfully it doesn't include drops, like almost every other known Shogi variant.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+L<perl>
 
 =head1 AUTHOR
 
-Jeffrey Goff, E<lt>jeffreygoff@nonetE<gt>
+Jeffrey Goff, E<lt>jgoff@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -617,4 +602,4 @@ Copyright 2004 by Jeffrey Goff
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
 
-=cut
+=_END__

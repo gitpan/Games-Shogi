@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use vars qw($VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub size() { 9 }
 sub promotion_zone() { 3 }
@@ -236,7 +236,8 @@ Games::Shogi - Base class describing the Shogi game and variants
   use Games::Shogi;
   $Game = Games::Shogi->new;
   $tl_piece = $Game->board()->[0][0];
-  print $Game->neighbor($tl_piece);
+  print @{$Game->neighbor($tl_piece)};
+  print $Game->japanese_name('g'); # kinsho
 
 =head1 DESCRIPTION
 
@@ -244,21 +245,27 @@ Games::Shogi - Base class describing the Shogi game and variants
 
 =item initial_board()
 
+Return a 2-D array of piece abbreviations in the initial board configuration.
+
 =item neighbor($piece_abbr)
+
+Return an array of directions that a given piece can travel. See below for descriptions of other restrictions that exist in the game, and the example source for how to use the directions in the course of an actual game.
 
 =item board()
 
+Return the board contents as a 2-D array reference.
+
 =item english_name($piece_abbr)
 
-Return the English name for the given piece
+Return the English name for the given piece.
 
 =item japanese_name($piece_abbr)
 
-Return the Japanese name in romaji for the given piece
+Return the Japanese name in romaji for the given piece.
 
 =item promote($piece_abbr)
 
-=item can_promote($x,$y,$piece_abbr)
+Return what the piece promotes to, or undef if no promotion exists.
 
 =back
 

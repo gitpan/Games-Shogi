@@ -335,43 +335,30 @@ sub new {
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-Games::Shogi - Perl extension for blah blah blah
+Games::Shogi::Wa - Piece descriptions and initial configuration for Wa Shogi
 
 =head1 SYNOPSIS
 
-  use Games::Shogi;
-  blah blah blah
+  use Games::Shogi::Wa;
+  $Game = Games::Shogi::Wa->new;
+  $piece = $Game->board()->[2][2];
+  print @{$Game->neighbor($piece);
+  print $Game->english_name('c'); # 'Copper General'
 
 =head1 DESCRIPTION
 
-Stub documentation for Games::Shogi, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
-
-Blah blah blah.
-
-=head2 EXPORT
-
-None by default.
+Wa Shogi is another middle variant, with 11 squares on a side. Like Tori Shogi, most of the pieces here are named after birds, and the pieces don't show up in most of the larger Shogi variants. There really aren't any exotic pieces in this game, at least in the sense of the Lion or Fire Demon.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+L<perl>
 
 =head1 AUTHOR
 
-Jeffrey Goff, E<lt>jeffreygoff@nonetE<gt>
+Jeffrey Goff, E<lt>jgoff@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

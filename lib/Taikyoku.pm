@@ -431,7 +431,7 @@ my $pieces = {
   # {{{ Mountain Dove
   md => {
     name => 'Mountain Dove',
-    promote => 'gd'
+    promote => 'gd',
     neighborhood => [
       q(o   o),
       q( 5 5 ),
@@ -5429,41 +5429,32 @@ sub new {
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-Games::Shogi::Taikyoku - Perl extension for blah blah blah
+Games::Shogi::Taikyoku - Piece descriptions and initial configuration for Taikyoku Shogi
 
 =head1 SYNOPSIS
 
   use Games::Shogi::Taikyoku;
-  blah blah blah
+  $Game = Games::Shogi::Taikyoku->new;
+  $piece = $Game->board()->[3][7];
+  print @{$Game->neighbor($tl_piece);
+  print $Game->english_name('fidr'); # 'Fire Dragon'
 
 =head1 DESCRIPTION
 
-Stub documentation for Games::Shogi::Taikyoku, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+Taikyoku Shogi is thought to be the largest Shogi variant in existence, on a 36 x 36 grid with 402 pieces, 201 per side. This game contains such pieces as the Buddhist Spirit and an alternate version of the Fire Demon, which moves differently than the other games.
 
-Blah blah blah.
-
-=head2 EXPORT
+The embedded POD contains commentary including an English translation of the only known manual for the game, which may go some way to explaining the variety of pieces and movements.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+L<perl>
 
 =head1 AUTHOR
 
-Jeffrey Goff, E<lt>jeffreygoff@nonetE<gt>
+Jeffrey Goff, E<lt>jgoff@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
